@@ -1,0 +1,87 @@
+---
+title: "wine_barplots"
+author: "Michael Dong"
+date: "2024-12-04"
+output: html_document
+---
+
+```{r}
+setwd(getwd())
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+wines_red <- read.csv("wine+quality/winequality-red.csv",header = FALSE, stringsAsFactors = FALSE)
+
+col_name <- strsplit(wines_red[1,], ";")[[1]]
+# col_name
+
+wine_data <- data.frame(values = wines_red[-1,], stringsAsFactors = FALSE)
+formatted_wine_data <- separate(wine_data, values,into=col_name, sep=";")
+
+formatted_wine_data$quality <- as.factor(formatted_wine_data$quality)
+
+# Assuming `formatted_wine_data` is already created
+# Ensure numeric columns are properly formatted
+numeric_cols <- sapply(formatted_wine_data, is.character)
+formatted_wine_data[, numeric_cols] <- lapply(formatted_wine_data[, numeric_cols], as.numeric)
+
+# Compute medians for each column grouped by quality
+median_data <- formatted_wine_data %>%
+  group_by(quality) %>%
+  summarise(across(where(is.numeric), median, na.rm = TRUE))
+
+# Reshape the data to a long format for ggplot
+long_median_data <- median_data %>%
+  pivot_longer(-quality, names_to = "Variable", values_to = "Median")
+
+# Plot
+ggplot(long_median_data, aes(x = quality, y = Median, fill = quality)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~Variable, scales = "free_y") +
+  labs(
+    title = "Median Values of Features by Quality (Red Wine)",
+    x = "Quality",
+    y = "Median Value"
+  ) +
+  theme_minimal()
+
+```
+
+
+```{r}
+wines_white <- read.csv("wine+quality/winequality-white.csv",header = FALSE, stringsAsFactors = FALSE)
+
+col_name <- strsplit(wines_white[1,], ";")[[1]]
+# col_name
+
+wine_data <- data.frame(values = wines_white[-1,], stringsAsFactors = FALSE)
+formatted_wine_data <- separate(wine_data, values,into=col_name, sep=";")
+
+formatted_wine_data$quality <- as.factor(formatted_wine_data$quality)
+
+# Assuming `formatted_wine_data` is already created
+# Ensure numeric columns are properly formatted
+numeric_cols <- sapply(formatted_wine_data, is.character)
+formatted_wine_data[, numeric_cols] <- lapply(formatted_wine_data[, numeric_cols], as.numeric)
+
+# Compute medians for each column grouped by quality
+median_data <- formatted_wine_data %>%
+  group_by(quality) %>%
+  summarise(across(where(is.numeric), median, na.rm = TRUE))
+
+# Reshape the data to a long format for ggplot
+long_median_data <- median_data %>%
+  pivot_longer(-quality, names_to = "Variable", values_to = "Median")
+
+# Plot
+ggplot(long_median_data, aes(x = quality, y = Median, fill = quality)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~Variable, scales = "free_y") +
+  labs(
+    title = "Median Values of Features by Quality (White Wine)",
+    x = "Quality",
+    y = "Median Value"
+  ) +
+  theme_minimal()
+```
