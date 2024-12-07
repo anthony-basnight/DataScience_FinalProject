@@ -11,7 +11,7 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 
-wines_red <- read.csv("wine+quality/winequality-red.csv",header = FALSE, stringsAsFactors = FALSE)
+wines_red <- read.csv("winequality-red.csv",header = FALSE, stringsAsFactors = FALSE)
 
 col_name <- strsplit(wines_red[1,], ";")[[1]]
 # col_name
@@ -50,7 +50,7 @@ ggplot(long_median_data, aes(x = quality, y = Median, fill = quality)) +
 
 
 ```{r}
-wines_white <- read.csv("wine+quality/winequality-white.csv",header = FALSE, stringsAsFactors = FALSE)
+wines_white <- read.csv("winequality-white.csv",header = FALSE, stringsAsFactors = FALSE)
 
 col_name <- strsplit(wines_white[1,], ";")[[1]]
 # col_name
